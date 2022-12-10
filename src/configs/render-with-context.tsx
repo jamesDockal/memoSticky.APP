@@ -7,7 +7,7 @@ const AllTheProviders: FC<{ children: React.ReactNode }> = ({ children }) => {
 	return <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>;
 };
 
-export const renderWithContext: any = (
+export const renderWithContext = (
 	ui: ReactElement,
 	options?: Omit<RenderOptions, 'wrapper'>
 ) => render(ui, { wrapper: AllTheProviders, ...options });
