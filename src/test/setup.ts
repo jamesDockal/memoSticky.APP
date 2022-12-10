@@ -1,1 +1,1 @@
-import '@testing-library/jest-native';
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
