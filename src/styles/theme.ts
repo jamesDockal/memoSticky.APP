@@ -1,8 +1,5 @@
 export const darkTheme = {
 	colors: {
-		// background: '#44475a',
-		// darkBackground: '#282a36',
-
 		darkBackground: '#44475a',
 		background: '#282a36',
 
