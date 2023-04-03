@@ -1,5 +1,5 @@
 import { renderWithContext } from 'app/configs/render-with-context';
-import { SetCard } from './index.setCard';
+import { SetCard } from './setCard.component';
 
 describe('SetCard Component', () => {
 	test('should render with the right labels', () => {

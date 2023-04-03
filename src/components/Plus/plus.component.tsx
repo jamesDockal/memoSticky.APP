@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacityProps } from 'react-native';
-import { Container, PlusIcon } from './styles.plus';
+import { Container, PlusIcon } from './plus.styles';
 
 interface Props extends TouchableOpacityProps {}
 

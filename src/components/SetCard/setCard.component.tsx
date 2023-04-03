@@ -1,6 +1,6 @@
 import React from 'react';
-import { Input } from '../Input/index.input';
-import { Container } from './styles.setCard';
+import { Input } from '../Input/input.component';
+import { Container } from './setCard.styles';
 
 export const SetCard: React.FC = () => {
 	return (

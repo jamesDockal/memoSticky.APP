@@ -1,5 +1,5 @@
 import { ThemeProvider } from 'styled-components';
-import { EditSet } from './src/screen/EditSet/index.editSet';
+// import { EditSet } from './src/screen/EditSet/index.editSet';
 import { darkTheme } from './src/styles/theme';
 import AppLoading from 'expo-app-loading';
 
@@ -10,6 +10,7 @@ import {
 	Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
 import React from 'react';
+import { NavBar } from './src/components/NavBar/navbar.component';
 
 const App: React.FC = () => {
 	const [isLoaded] = useFonts({
@@ -24,7 +25,8 @@ const App: React.FC = () => {
 
 	return (
 		<ThemeProvider theme={darkTheme}>
-			<EditSet />
+			{/* <EditSet /> */}
+			<NavBar />
 		</ThemeProvider>
 	);
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextInputProps } from 'react-native';
-import { Container, InputComponent, Label } from './styles.input';
+import { Container, InputComponent, Label } from './input.styles';
 
 interface Props extends TextInputProps {
 	label?: string;

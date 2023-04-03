@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Plus } from '../../components/Plus/index.plus';
+import { FlatList } from 'react-native';
 
-import { SetCard } from '../../components/SetCard/index.setCard';
-import { Container } from './styles.editSet';
+import { SetCard } from '../../components/SetCard/setCard.component';
+import { Plus } from '../../components/Plus/plus.component';
+
+import { Container } from './editSet.styles';
 
 export const EditSet: React.FC = () => {
 	const [setCards, setSetCards] = useState([
@@ -22,9 +24,11 @@ export const EditSet: React.FC = () => {
 
 	return (
 		<Container>
-			{setCards.map(({ id }) => (
-				<SetCard key={id} />
-			))}
+			<FlatList
+				data={setCards}
+				renderItem={({ item }) => <SetCard key={item.id} />}
+			/>
+
 			<Plus onPress={onPlusButtonPress} />
 		</Container>
 	);

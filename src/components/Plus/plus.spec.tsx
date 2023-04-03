@@ -1,5 +1,5 @@
 import { fireEvent, renderWithContext } from 'app/configs/render-with-context';
-import { Plus } from './index.plus';
+import { Plus } from './plus.component';
 
 describe('Plus Component', () => {
 	test('should render Plus Component with right attributes', () => {
