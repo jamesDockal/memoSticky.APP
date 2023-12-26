@@ -35,7 +35,6 @@ export const NavBar: React.FC = () => {
 					tabBarIcon: ({ focused, color, size }) => {
 						let iconName;
 						const rn = route.name;
-						console.log('color', color);
 
 						if (rn === homeName) {
 							iconName = focused ? 'pencil-alt' : 'penny-arcade';

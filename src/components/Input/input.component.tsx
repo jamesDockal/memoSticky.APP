@@ -14,12 +14,13 @@ export const Input: React.FC<Props> = ({ label, ...rest }) => {
 	const handleBlur = () => setIsFocused(false);
 
 	return (
-		<Container {...rest} isFocused={isFocused}>
+		<Container isFocused={isFocused}>
 			<Label isFocused={isFocused}>{label}</Label>
 			<InputComponent
 				onFocus={handleFocus}
 				onBlur={handleBlur}
 				isFocused={isFocused}
+				{...rest}
 			/>
 		</Container>
 	);
