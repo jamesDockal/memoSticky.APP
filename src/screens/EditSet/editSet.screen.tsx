@@ -5,56 +5,54 @@ import { SetCard } from '../../components/SetCard/setCard.component';
 import { Plus } from '../../components/Plus/plus.component';
 
 import { Container } from './editSet.styles';
-// const storage = new MMKV({id: 'test'})
+import { Card } from '../../dto/card.dto';
+import { EdtiSetStorageService } from '../../factories';
 
 export const EditSet: React.FC = () => {
-	const [setCards, setSetCards] = useState([
+	const [setCards, setSetCards] = useState<Card[]>([
 		{
-			id: 1,
-			term: 'teste',
-			meaning: '2asd3asdas1',
+			id: Math.random() * 10,
+			term: '',
+			meaning: '',
 		},
 	]);
 
-	const handleSave = (data, index) => {
-		// storage.set('set', JSON.stringify([data]))
-		fetchData()
+	const handleSave = async (editedCard: Card) => {
+		const editedSetCards = setCards;
+		const index = editedSetCards.findIndex((card) => card.id === editedCard.id);
+		editedSetCards[index] = editedCard;
 
-	}
+		await EdtiSetStorageService.save(editedSetCards);
+	};
 
-	const fetchData = () => {
-		// const data = storage.getString('set')
-		// console.log('data', data)
-		// setSetCards(data)
-	}
-
-	useEffect(() => {
-		fetchData()
-	}, [])
-	
-
-
+	const fetchData = async () => {
+		const result = await EdtiSetStorageService.fetchAll();
+		setSetCards(result || []);
+	};
 
 	const onPlusButtonPress = (): void => {
 		setSetCards((oldState) => [
 			...oldState,
 			{
-				id: oldState[oldState.length - 1].id + 1,
+				id: Math.random() * 10,
+				meaning: '',
+				term: '',
 			},
 		]);
 	};
 
+	useEffect(() => {
+		fetchData();
+	}, []);
+
 	return (
 		<Container>
-			{/* <GestureHandlerRootView> */}
 			<FlatList
 				data={setCards}
-				renderItem={({ item, index }) => <SetCard key={item.id} item={item}
-					index={index}
-					handleSave={handleSave}
-				/>}
+				renderItem={({ item, index }) => (
+					<SetCard key={item.id} item={item} handleSave={handleSave} />
+				)}
 			/>
-			{/* </GestureHandlerRootView> */}
 
 			<Plus onPress={onPlusButtonPress} />
 		</Container>
