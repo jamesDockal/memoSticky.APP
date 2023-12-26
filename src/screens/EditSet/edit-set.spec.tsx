@@ -1,6 +1,6 @@
 import { fireEvent, renderWithContext } from 'app/configs/render-with-context';
 import React from 'react';
-import { EditSet } from './editSet.screen';
+import { EditSet } from './edit-set.screen';
 
 describe('EditSet Screen', () => {
 	test('should the required components', async () => {

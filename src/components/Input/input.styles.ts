@@ -31,7 +31,7 @@ type InputProps = {
 export const InputComponent = styled(TextInput)<InputProps>`
 	border-bottom-width: 2px;
 	border-color: ${({ theme }) => theme.colors.blurText};
-	transition: 0.3s;
+	/* transition: 0.3s; */
 
 	${({ isFocused }) =>
 		isFocused &&

@@ -4,7 +4,7 @@ import { FlatList } from 'react-native';
 import { SetCard } from '../../components/SetCard/setCard.component';
 import { Plus } from '../../components/Plus/plus.component';
 
-import { Container } from './editSet.styles';
+import { Container } from './edit-set.styles';
 import { Card } from '../../dto/card.dto';
 import { EdtiSetStorageService } from '../../factories';
 

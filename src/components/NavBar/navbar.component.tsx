@@ -3,12 +3,20 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { EditSet } from '../../screens/EditSet/editSet.screen';
 import { darkTheme } from '../../styles/theme';
 
-const homeName = 'Edit Set';
+import { EditSet } from '../../screens/EditSet/edit-set.screen';
+import { LearnSet } from '../../screens/LearnSet/learn-set.screen';
+
+const editSet = 'Edit Set';
+const learningSet = 'Learn Set';
 
 const Tab = createBottomTabNavigator();
+
+const icons = {
+	[editSet]: 'pencil-alt',
+	[learningSet]: 'book',
+};
 
 export const NavBar: React.FC = () => {
 	const theme = darkTheme;
@@ -26,26 +34,22 @@ export const NavBar: React.FC = () => {
 			}
 		>
 			<Tab.Navigator
-				initialRouteName={homeName}
+				initialRouteName={editSet}
 				screenOptions={({ route }) => ({
 					tabBarStyle: {
 						paddingTop: 8,
 					},
 					tabBarLabel: '',
 					tabBarIcon: ({ focused, color, size }) => {
-						let iconName;
 						const rn = route.name;
+						const icon = icons[rn];
 
-						if (rn === homeName) {
-							iconName = focused ? 'pencil-alt' : 'penny-arcade';
-						}
-
-						// return <Ionicons name="pen" size={size} color={color} />;
-						return <FontAwesome5 name={iconName} size={size} color={color} />;
+						return <FontAwesome5 name={icon} size={size} color={color} />;
 					},
 				})}
 			>
-				<Tab.Screen name={homeName} component={EditSet} />
+				<Tab.Screen name={editSet} component={EditSet} />
+				<Tab.Screen name={learningSet} component={LearnSet} />
 			</Tab.Navigator>
 		</NavigationContainer>
 	);
