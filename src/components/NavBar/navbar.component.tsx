@@ -34,7 +34,7 @@ export const NavBar: React.FC = () => {
 			}
 		>
 			<Tab.Navigator
-				initialRouteName={editSet}
+				initialRouteName={learningSet}
 				screenOptions={({ route }) => ({
 					tabBarStyle: {
 						paddingTop: 8,

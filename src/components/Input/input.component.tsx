@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { TextInputProps } from 'react-native';
 import { Container, InputComponent, Label } from './input.styles';
+import { themeToType } from '../../constants/theme.constant';
 
 interface Props extends TextInputProps {
 	label?: string;
+	themeType?: 'dark' | 'light';
 }
 
-export const Input: React.FC<Props> = ({ label, ...rest }) => {
+export const Input: React.FC<Props> = ({
+	label,
+	themeType = 'dark',
+	...rest
+}) => {
 	const [isFocused, setIsFocused] = useState(false);
 
 	const handleFocus = () => setIsFocused(true);
@@ -20,6 +26,7 @@ export const Input: React.FC<Props> = ({ label, ...rest }) => {
 				onFocus={handleFocus}
 				onBlur={handleBlur}
 				isFocused={isFocused}
+				theme={themeToType[themeType]}
 				{...rest}
 			/>
 		</Container>

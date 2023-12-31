@@ -1,11 +1,11 @@
 import { renderWithContext } from 'app/configs/render-with-context';
-import { SetCard } from './setCard.component';
+import { SetEditCard } from './set-edit-card.component';
 
 jest.mock();
 
 describe('SetCard Component', () => {
 	test('should render with the right labels', () => {
-		const { getByText } = renderWithContext(<SetCard />);
+		const { getByText } = renderWithContext(<SetEditCard />);
 
 		expect(getByText('Term')).toBeTruthy();
 		expect(getByText('Meaning')).toBeTruthy();

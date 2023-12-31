@@ -1,23 +1,20 @@
 import React, { useRef, useState } from 'react';
 import { Input } from '../Input/input.component';
-import { Container } from './setCard.styles';
-import { Dimensions, TextInput, View } from 'react-native';
-import { Remove } from '../Remove/remove.component';
-import { Card } from '../../dto/card.dto';
-
-const windowWidth = Dimensions.get('window').width;
+import { Container } from './set-edit-card.styles';
+import { View } from 'react-native';
+import { Card } from '../../dto/set.dto';
 
 interface Props {
 	handleSave: (item: Card) => void;
-	item: Card;
+	card: Card;
 }
 
-export const SetCard: React.FC<Props> = ({ item, handleSave }) => {
-	const [term, setTerm] = useState(item.term);
-	const [meaning, setMeaning] = useState(item.meaning);
+export const SetEditCard: React.FC<Props> = ({ card, handleSave }) => {
+	const [term, setTerm] = useState(card.term);
+	const [meaning, setMeaning] = useState(card.meaning);
 
 	const handleBur = () => {
-		handleSave({ term, meaning, id: item.id });
+		handleSave({ term, meaning, id: card.id });
 	};
 
 	return (
@@ -39,15 +36,18 @@ export const SetCard: React.FC<Props> = ({ item, handleSave }) => {
 					onChangeText={setTerm}
 				/>
 
-				<Input
-					label="Meaning"
-					defaultValue={meaning}
+				<View
 					style={{
 						marginTop: 16,
 					}}
-					onBlur={handleBur}
-					onChangeText={setMeaning}
-				/>
+				>
+					<Input
+						label="Meaning"
+						defaultValue={meaning}
+						onBlur={handleBur}
+						onChangeText={setMeaning}
+					/>
+				</View>
 			</Container>
 
 			{/* <Remove

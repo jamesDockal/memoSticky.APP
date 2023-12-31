@@ -1,4 +1,5 @@
 export class IStorageHandler {
-	save: <T>(key: string, data: T | T[]) => Promise<void>;
-	fetchAll: <T>(key: string) => Promise<T[]>;
+	save: <T>(key: string, data: T | []) => Promise<void>;
+	saveProperty: <T>(key: string, data: [keyof T]) => Promise<void>;
+	fetch: <T>(key: string) => Promise<T>;
 }

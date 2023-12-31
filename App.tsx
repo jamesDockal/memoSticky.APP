@@ -11,6 +11,7 @@ import {
 } from '@expo-google-fonts/poppins';
 import React from 'react';
 import { NavBar } from './src/components/NavBar/navbar.component';
+import { StatusBar } from 'react-native';
 
 const App: React.FC = () => {
 	const [isLoaded] = useFonts({
@@ -26,6 +27,8 @@ const App: React.FC = () => {
 	return (
 		<ThemeProvider theme={darkTheme}>
 			{/* <EditSet /> */}
+			<StatusBar backgroundColor={darkTheme.colors.darkBackground} />
+
 			<NavBar />
 		</ThemeProvider>
 	);

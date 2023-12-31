@@ -1,1 +1,1 @@
-export * from './edit-set-storage.factory';
+export * from './set.factory';

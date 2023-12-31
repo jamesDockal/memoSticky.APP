@@ -1,56 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 
-import { SetCard } from '../../components/SetCard/setCard.component';
+import { SetEditCard } from '../../components/SetEditCard/set-edit-card.component';
 import { Plus } from '../../components/Plus/plus.component';
 
 import { Container } from './edit-set.styles';
-import { Card } from '../../dto/card.dto';
-import { EdtiSetStorageService } from '../../factories';
+import { Card, Set } from '../../dto/set.dto';
+import { setService } from '../../factories';
+import { mockSetKey } from '../../mock';
 
-export const EditSet: React.FC = () => {
-	const [setCards, setSetCards] = useState<Card[]>([
+const DEFAULT_SET: Set = {
+	name: mockSetKey,
+	currentCardIndex: 0,
+	cards: [
 		{
 			id: Math.random() * 10,
 			term: '',
 			meaning: '',
 		},
-	]);
+	],
+};
+
+export const EditSet: React.FC = () => {
+	const [set, setSet] = useState<Set>(DEFAULT_SET);
 
 	const handleSave = async (editedCard: Card) => {
-		const editedSetCards = setCards;
+		const editedSetCards = set.cards;
 		const index = editedSetCards.findIndex((card) => card.id === editedCard.id);
 		editedSetCards[index] = editedCard;
 
-		await EdtiSetStorageService.save(editedSetCards);
+		await setService.save(mockSetKey, {
+			currentCardIndex: 0,
+			...set,
+			cards: editedSetCards,
+		});
 	};
 
 	const fetchData = async () => {
-		const result = await EdtiSetStorageService.fetchAll();
-		setSetCards(result || []);
+		const result = await setService.fetch(mockSetKey);
+		setSet(result || DEFAULT_SET);
 	};
 
 	const onPlusButtonPress = (): void => {
-		setSetCards((oldState) => [
+		setSet((oldState) => ({
 			...oldState,
-			{
-				id: Math.random() * 10,
-				meaning: '',
-				term: '',
-			},
-		]);
+			cards: [
+				...oldState.cards,
+				{
+					id: Math.random() * 10,
+					meaning: '',
+					term: '',
+				},
+			],
+		}));
 	};
 
 	useEffect(() => {
 		fetchData();
 	}, []);
-
+	console.log('set', set);
 	return (
 		<Container>
 			<FlatList
-				data={setCards}
+				data={set.cards}
 				renderItem={({ item, index }) => (
-					<SetCard key={item.id} item={item} handleSave={handleSave} />
+					<SetEditCard key={item.id} card={item} handleSave={handleSave} />
 				)}
 			/>
 

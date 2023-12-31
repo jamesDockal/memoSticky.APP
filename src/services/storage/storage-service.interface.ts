@@ -1,5 +1,4 @@
 export class IStorageService<T> {
-	save: (data: T) => Promise<void>;
-
-	fetchAll: () => Promise<T[]>;
+	save: (key: string, data: T) => Promise<void>;
+	fetch: (key: string, data: T) => Promise<T>;
 }
