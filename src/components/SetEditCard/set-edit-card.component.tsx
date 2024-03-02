@@ -1,12 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Input } from '../Input/input.component';
 import { Container } from './set-edit-card.styles';
-import { View } from 'react-native';
-import { Card } from '../../dto/set.dto';
+import { Keyboard, View } from 'react-native';
+import { CardDTO } from '../../dto/set.dto';
 
 interface Props {
-	handleSave: (item: Card) => void;
-	card: Card;
+	handleSave: (item: CardDTO) => void;
+	card: CardDTO;
 }
 
 export const SetEditCard: React.FC<Props> = ({ card, handleSave }) => {

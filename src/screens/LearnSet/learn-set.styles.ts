@@ -28,4 +28,5 @@ export const OpacityBackground = styled(View)`
 	left: 0;
 	height: 100%;
 	width: 100%;
+	border-radius: 8px;
 `;

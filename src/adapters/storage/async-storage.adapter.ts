@@ -7,9 +7,15 @@ export class AsyncStorageAdapter implements IStorageHandler {
 		await ReactNativeAsyncStorage.setItem(key, JSON.stringify(data));
 	}
 
-	async saveProperty<T>(key: string, data: [keyof T]): Promise<void> {
-		const alredySavedData = await this.fetch(key);
-		alredySavedData[data];
+	async saveProperty<T, I extends keyof T>(
+		key: string,
+		property: I,
+		data: T[I]
+	): Promise<void> {
+		const item = (await this.fetch(key)) || {};
+		item[property] = data;
+
+		await this.save(key, item);
 	}
 
 	async fetch<T>(key: string): Promise<T> {

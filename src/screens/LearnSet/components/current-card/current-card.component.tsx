@@ -1,31 +1,49 @@
-import React, { useState } from 'react';
-import { Content, Term, WriteMeaning } from './current-card.styles';
+import React, { useEffect, useState } from 'react';
+import { Content, Meaning, Term, WriteMeaning } from './current-card.styles';
 import { Input } from '../../../../components/Input/input.component';
-import { Card } from '../../../../dto/set.dto';
+import { CardDTO } from '../../../../dto/set.dto';
 import { View } from 'react-native';
+import { setService } from '../../../../factories';
+import { mockSetKey } from '../../../../mock';
 
 interface Props {
-	card: Card;
+	card: CardDTO;
+	onWriteMeaning: (value: string) => void;
 }
 
-export const CurrentCard: React.FC<Props> = ({ card }) => {
-	const onChangeInput = (text) => {};
+export const CurrentCard: React.FC<Props> = ({ card, onWriteMeaning }) => {
+	const [meaning, setMeaning] = useState('');
+	const [showMeaning, setShowMeaning] = useState(false);
+
+	const showCardMeaning = () => {
+		setShowMeaning(true);
+	};
+
+	useEffect(() => {
+		setMeaning('');
+		setShowMeaning(false);
+	}, [card]);
 
 	return (
 		<Content>
 			<Term>{card.term}</Term>
-			{/* <Value>China</Value> */}
+			{showMeaning && <Meaning>{card.meaning}</Meaning>}
 			<View
 				style={{
 					width: '100%',
 				}}
 			>
 				<WriteMeaning
-					onChangeText={onChangeInput}
+					value={meaning}
+					onChangeText={(text) => {
+						onWriteMeaning(text);
+						setMeaning(text);
+					}}
 					themeType="light"
 					style={{
 						textAlign: 'center',
 					}}
+					onSubmitEditing={showCardMeaning}
 				/>
 			</View>
 		</Content>

@@ -8,6 +8,14 @@ export class StorageService<T> implements IStorageService<T> {
 		await this.storageHandler.save<T>(key, data);
 	}
 
+	async saveProperty<I extends keyof T>(
+		key: string,
+		property: I,
+		data: T[I]
+	): Promise<void> {
+		await this.storageHandler.saveProperty<T>(key, property, data);
+	}
+
 	async fetch(key: string): Promise<T> {
 		return await this.storageHandler.fetch<T>(key);
 	}

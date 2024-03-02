@@ -1,11 +1,11 @@
-export interface Card {
+export interface CardDTO {
 	term: string;
 	meaning: string;
 	id: string | number;
 }
 
-export interface Set {
+export interface SetDTO {
 	name: string;
 	currentCardIndex: number;
-	cards: Card[];
+	cards: CardDTO[];
 }

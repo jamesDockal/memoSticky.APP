@@ -13,10 +13,13 @@ export const Content = styled(View)`
 
 export const Term = styled(Text)`
 	font-size: 32px;
+	font-weight: bold;
 `;
 
-export const Value = styled(Text)`
-	font-size: 20px;
+export const Meaning = styled(Text)`
+	font-size: 24px;
+	color: ${({ theme }) => theme.colors.green};
+	font-weight: 700;
 `;
 
 export const WriteMeaning = styled(Input)`

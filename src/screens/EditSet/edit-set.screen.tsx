@@ -1,43 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Text } from 'react-native';
 
 import { SetEditCard } from '../../components/SetEditCard/set-edit-card.component';
 import { Plus } from '../../components/Plus/plus.component';
 
 import { Container } from './edit-set.styles';
-import { Card, Set } from '../../dto/set.dto';
+import { CardDTO, SetDTO } from '../../dto/set.dto';
 import { setService } from '../../factories';
 import { mockSetKey } from '../../mock';
 
-const DEFAULT_SET: Set = {
+const DEFAULT_SET: SetDTO = {
 	name: mockSetKey,
 	currentCardIndex: 0,
 	cards: [
 		{
-			id: Math.random() * 10,
 			term: '',
 			meaning: '',
-		},
+		} as any,
 	],
 };
 
 export const EditSet: React.FC = () => {
-	const [set, setSet] = useState<Set>(DEFAULT_SET);
+	const [set, setSet] = useState<SetDTO>(DEFAULT_SET);
 
-	const handleSave = async (editedCard: Card) => {
+	const handleSave = async (editedCard: CardDTO) => {
+		if (!editedCard.meaning || !editedCard.term) return;
+
+		const card = await setService.addNewCard(editedCard);
+
 		const editedSetCards = set.cards;
-		const index = editedSetCards.findIndex((card) => card.id === editedCard.id);
-		editedSetCards[index] = editedCard;
 
-		await setService.save(mockSetKey, {
-			currentCardIndex: 0,
-			...set,
-			cards: editedSetCards,
-		});
+		const index = editedSetCards.findIndex((card) => card.id === card.id);
+		editedSetCards[index] = card;
+
+		const removedEmpty = editedSetCards.filter(
+			(card) => card.meaning && card.term
+		);
+
+		await setService.saveProperty(mockSetKey, 'cards', removedEmpty);
 	};
 
 	const fetchData = async () => {
 		const result = await setService.fetch(mockSetKey);
+		if (!result?.cards.length) {
+			result.cards = DEFAULT_SET.cards;
+		}
 		setSet(result || DEFAULT_SET);
 	};
 
@@ -47,10 +54,9 @@ export const EditSet: React.FC = () => {
 			cards: [
 				...oldState.cards,
 				{
-					id: Math.random() * 10,
 					meaning: '',
 					term: '',
-				},
+				} as any,
 			],
 		}));
 	};
@@ -58,7 +64,7 @@ export const EditSet: React.FC = () => {
 	useEffect(() => {
 		fetchData();
 	}, []);
-	console.log('set', set);
+
 	return (
 		<Container>
 			<FlatList
