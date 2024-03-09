@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 
 import { SetEditCard } from '../../components/SetEditCard/set-edit-card.component';
 import { Plus } from '../../components/Plus/plus.component';
@@ -22,6 +22,7 @@ const DEFAULT_SET: SetDTO = {
 
 export const EditSet: React.FC = () => {
 	const [set, setSet] = useState<SetDTO>(DEFAULT_SET);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const handleSave = async (editedCard: CardDTO) => {
 		if (!editedCard.meaning || !editedCard.term) return;
@@ -41,11 +42,13 @@ export const EditSet: React.FC = () => {
 	};
 
 	const fetchData = async () => {
+		setIsLoading(true);
 		const result = await setService.fetch(mockSetKey);
 		if (!result?.cards.length) {
 			result.cards = DEFAULT_SET.cards;
 		}
 		setSet(result || DEFAULT_SET);
+		setIsLoading(false);
 	};
 
 	const onPlusButtonPress = (): void => {
@@ -67,14 +70,27 @@ export const EditSet: React.FC = () => {
 
 	return (
 		<Container>
-			<FlatList
-				data={set.cards}
-				renderItem={({ item, index }) => (
-					<SetEditCard key={item.id} card={item} handleSave={handleSave} />
-				)}
-			/>
+			{isLoading ? (
+				<View
+					style={{
+						flex: 1,
+						justifyContent: 'center',
+					}}
+				>
+					<ActivityIndicator size="large" color="#00ff00" />
+				</View>
+			) : (
+				<>
+					<FlatList
+						data={set.cards}
+						renderItem={({ item, index }) => (
+							<SetEditCard key={item.id} card={item} handleSave={handleSave} />
+						)}
+					/>
 
-			<Plus onPress={onPlusButtonPress} />
+					<Plus onPress={onPlusButtonPress} />
+				</>
+			)}
 		</Container>
 	);
 };
