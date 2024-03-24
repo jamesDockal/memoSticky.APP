@@ -10,13 +10,12 @@ export class HttpService implements IHttp {
 
 			return response.data;
 		} catch (error) {
-			console.log('get', error);
+			console.log('get error', error);
 		}
 	}
 	async post<T>(path: string, data: unknown): Promise<T> {
 		try {
 			const response = await this.hanlder.post(path, data);
-			console.log('1', response.data);
 
 			return response.data;
 		} catch (error) {

@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { Content, Meaning, Term, WriteMeaning } from './current-card.styles';
-import { Input } from '../../../../components/Input/input.component';
+import {
+	Content,
+	Meaning,
+	MeaningBox,
+	MeaningTip,
+	Term,
+	TermTip,
+	WriteMeaning,
+} from './current-card.styles';
 import { CardDTO } from '../../../../dto/set.dto';
 import { View } from 'react-native';
-import { setService } from '../../../../factories';
-import { mockSetKey } from '../../../../mock';
 
 interface Props {
 	card: CardDTO;
 	onWriteMeaning: (value: string) => void;
+	onShowCardMeaning: () => void;
 }
 
-export const CurrentCard: React.FC<Props> = ({ card, onWriteMeaning }) => {
+export const CurrentCard: React.FC<Props> = ({
+	card,
+	onWriteMeaning,
+	onShowCardMeaning,
+}) => {
 	const [meaning, setMeaning] = useState('');
 	const [showMeaning, setShowMeaning] = useState(false);
 
 	const showCardMeaning = () => {
 		setShowMeaning(true);
+		onShowCardMeaning();
 	};
 
 	useEffect(() => {
@@ -27,7 +38,16 @@ export const CurrentCard: React.FC<Props> = ({ card, onWriteMeaning }) => {
 	return (
 		<Content>
 			<Term>{card.term}</Term>
-			{showMeaning && <Meaning>{card.meaning}</Meaning>}
+
+			{card.termTip && <TermTip>{card.termTip}</TermTip>}
+
+			{showMeaning && (
+				<MeaningBox>
+					<Meaning>{card.meaning}</Meaning>
+					{card.meaningTip && <MeaningTip>{card.meaningTip}</MeaningTip>}
+				</MeaningBox>
+			)}
+
 			<View
 				style={{
 					width: '100%',
@@ -44,6 +64,7 @@ export const CurrentCard: React.FC<Props> = ({ card, onWriteMeaning }) => {
 						textAlign: 'center',
 					}}
 					onSubmitEditing={showCardMeaning}
+					blurOnSubmit={false}
 				/>
 			</View>
 		</Content>

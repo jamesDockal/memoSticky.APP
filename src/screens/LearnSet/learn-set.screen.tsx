@@ -19,19 +19,20 @@ export const LearnSet: React.FC = () => {
 	const [currentCard, setCurrentCard] = useState<CardDTO>({} as CardDTO);
 
 	const fetchData = async () => {
-		const result = (await setService.fetch(mockSetKey)) || ({} as SetDTO);
+		const result = (await setService.fetch()) || ({} as SetDTO);
 		setSet(result);
 		if (result?.cards) {
 			setCurrentCard(result?.cards[result.currentCardIndex]);
 		}
 	};
 
-	const onWriteMeaning = async (text) => {
+	const onWriteMeaning = async (text: string) => {
 		if (text === currentCard.meaning) {
-			const newIndex = await setService.setNewCardIndex(
-				mockSetKey,
-				set.currentCardIndex + 1
-			);
+			let newIndex = set.currentCardIndex + 1;
+			if (newIndex >= set.cards.length) {
+				newIndex = 0;
+			}
+			await setService.setNewCardIndex(newIndex);
 
 			setCurrentCard(set?.cards[newIndex]);
 			setSet((oldState) => ({
@@ -41,23 +42,35 @@ export const LearnSet: React.FC = () => {
 		}
 	};
 
+	const onShowCardMeaning = () => {
+		setSet((oldState) => {
+			const newCards = [...oldState.cards];
+			newCards.splice(oldState.currentCardIndex + 3, 0, currentCard);
+			return {
+				...oldState,
+				cards: newCards,
+			};
+		});
+	};
+
 	useEffect(() => {
 		if (isFocused) {
 			fetchData();
 		}
 	}, [isFocused]);
 
+	// console.log('set', set)
+
 	return (
-		<Container
-			source={{ uri: 'a' }}
-			// source={{
-			// 	uri: 'https://d3544la1u8djza.cloudfront.net/APHI/Blog/2016/10_October/persians/Persian+Cat+Facts+History+Personality+and+Care+_+ASPCA+Pet+Health+Insurance+_+white+Persian+cat+resting+on+a+brown+sofa-min.jpg',
-			// }}
-		>
+		<Container source={{ uri: currentCard.imageUrl }}>
 			<CardContainer>
 				<OpacityBackground />
 				{currentCard?.id && (
-					<CurrentCard card={currentCard} onWriteMeaning={onWriteMeaning} />
+					<CurrentCard
+						card={currentCard}
+						onWriteMeaning={onWriteMeaning}
+						onShowCardMeaning={onShowCardMeaning}
+					/>
 				)}
 			</CardContainer>
 		</Container>

@@ -5,21 +5,40 @@ import { IHttp } from '../http/http.interface';
 import { StorageService } from '../storage/storage.service';
 import { ISetService } from './set.interface';
 
+// TODO: remover  e fazer ficar em splash screen até terminar esse loading inicial
+const DEFAULT_SET: SetDTO = {
+	// name: mockSetKey,
+	name: 'name',
+	currentCardIndex: 0,
+	cards: [
+		{
+			term: '',
+			meaning: '',
+		} as any,
+	],
+};
+
 export class SetService extends StorageService<SetDTO> implements ISetService {
 	public currentSet: SetDTO;
+	public localStorageKey: string = mockSetKey;
+	public localSet: SetDTO = DEFAULT_SET;
 
 	constructor(
 		storageHandler: IStorageHandler,
 		private readonly httpService: IHttp
 	) {
 		super(storageHandler);
+
+		this.getFromStorage().then((set) => {
+			this.localSet = set || DEFAULT_SET;
+		});
 	}
 
-	async fetch(key: string): Promise<SetDTO> {
+	async fetch(): Promise<SetDTO> {
 		const cards = await this.httpService.get<CardDTO[]>('/card');
-		await this.saveProperty(mockSetKey, 'cards', cards);
+		this.saveProperty(this.localStorageKey, 'cards', cards);
 
-		const currentSet = await super.fetch(key);
+		const currentSet = await super.fetch(this.localStorageKey);
 
 		this.currentSet = currentSet;
 
@@ -28,21 +47,22 @@ export class SetService extends StorageService<SetDTO> implements ISetService {
 			((!currentSet?.currentCardIndex && currentSet?.currentCardIndex !== 0) ||
 				currentSet?.currentCardIndex > currentSet.cards.length)
 		) {
-			await this.saveProperty(mockSetKey, 'currentCardIndex', 0);
+			await this.saveProperty(this.localStorageKey, 'currentCardIndex', 0);
 		}
 
 		return { ...currentSet, cards };
 	}
 
-	async setNewCardIndex(key: string, newCurrentCardIndex: number) {
-		if (newCurrentCardIndex >= this.currentSet.cards.length) {
-			await this.saveProperty(key, 'currentCardIndex', 0);
+	async getFromStorage(): Promise<SetDTO> {
+		return await super.fetch(this.localStorageKey);
+	}
 
-			return 0;
-		}
-
-		await this.saveProperty(key, 'currentCardIndex', newCurrentCardIndex);
-		return newCurrentCardIndex;
+	async setNewCardIndex(newCurrentCardIndex: number) {
+		await this.saveProperty(
+			this.localStorageKey,
+			'currentCardIndex',
+			newCurrentCardIndex
+		);
 	}
 
 	async addNewCard(card: CardDTO): Promise<CardDTO> {

@@ -31,12 +31,11 @@ type InputProps = {
 export const InputComponent = styled(TextInput)<InputProps>`
 	border-bottom-width: 2px;
 	border-color: ${({ theme }) => theme.colors.blurText};
-	/* transition: 0.3s; */
+	color: ${({ theme }) => theme.colors.lightText};
 
 	${({ isFocused }) =>
 		isFocused &&
 		css`
 			border-color: ${({ theme }) => theme.colors.lightText};
-			color: ${({ theme }) => theme.colors.lightText};
-		`}
+		`};
 `;
