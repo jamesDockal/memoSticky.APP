@@ -6,7 +6,9 @@ type ContainerProps = {
 	isFocused: boolean;
 };
 
-export const Container = styled(View)<ContainerProps>``;
+export const Container = styled(View)<ContainerProps>`
+	width: 100%;
+`;
 
 type LabelProps = {
 	isFocused: boolean;

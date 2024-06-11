@@ -1,9 +1,10 @@
-import { CardDTO, SetDTO } from '../../dto/set.dto';
+import { CardDTO, SetDTO, SetModel } from '../../dto/set.dto';
 
 export class ISetService {
 	currentSet?: SetDTO;
-
-	setNewCardIndex: (index: number) => void;
-
+	setNewCardIndex: (setId: string,index: number) => void;
 	addNewCard: (card: CardDTO) => Promise<CardDTO>;
+	deleteCard: (id: string | number) => Promise<void>;
+	getAllSets: () => Promise<SetModel[]>;
+	getSetInfo: (setId: string) => Promise<SetDTO>;
 }

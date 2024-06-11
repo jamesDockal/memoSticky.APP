@@ -1,5 +1,5 @@
 import { IStorageHandler } from '../../adapters/storage/storage-handler.interface';
-import { CardDTO, SetDTO } from '../../dto/set.dto';
+import { CardDTO, SetDTO, SetModel } from '../../dto/set.dto';
 import { mockSetKey } from '../../mock';
 import { IHttp } from '../http/http.interface';
 import { StorageService } from '../storage/storage.service';
@@ -8,6 +8,7 @@ import { ISetService } from './set.interface';
 // TODO: remover  e fazer ficar em splash screen até terminar esse loading inicial
 const DEFAULT_SET: SetDTO = {
 	// name: mockSetKey,
+	id: '',
 	name: 'name',
 	currentCardIndex: 0,
 	cards: [
@@ -34,35 +35,46 @@ export class SetService extends StorageService<SetDTO> implements ISetService {
 		});
 	}
 
-	async fetch(): Promise<SetDTO> {
-		const cards = await this.httpService.get<CardDTO[]>('/card');
-		this.saveProperty(this.localStorageKey, 'cards', cards);
+	async getAllSets(): Promise<SetModel[]> {
+		const sets = await this.httpService.get<SetModel[]>('/set');
 
-		const currentSet = await super.fetch(this.localStorageKey);
+		return sets;
+	}
 
-		this.currentSet = currentSet;
+	async getSetInfo(setId: string): Promise<SetDTO> {
+		const set = await this.httpService.get<SetDTO>(`/set/${setId}`);
+		// this.saveProperty(this.localStorageKey, 'cards', set.cards);
 
-		if (
-			currentSet &&
-			((!currentSet?.currentCardIndex && currentSet?.currentCardIndex !== 0) ||
-				currentSet?.currentCardIndex > currentSet.cards.length)
-		) {
-			await this.saveProperty(this.localStorageKey, 'currentCardIndex', 0);
-		}
+		// const currentSet = await super.getCards(this.localStorageKey);
 
-		return { ...currentSet, cards };
+		// this.currentSet = currentSet;
+
+		// if (
+		// 	currentSet &&
+		// 	((!currentSet?.currentCardIndex && currentSet?.currentCardIndex !== 0) ||
+		// 		currentSet?.currentCardIndex > currentSet.cards.length)
+		// ) {
+		// 	await this.saveProperty(this.localStorageKey, 'currentCardIndex', 0);
+		// }
+
+		return set;
 	}
 
 	async getFromStorage(): Promise<SetDTO> {
-		return await super.fetch(this.localStorageKey);
+		return await super.getCards(this.localStorageKey);
 	}
 
-	async setNewCardIndex(newCurrentCardIndex: number) {
-		await this.saveProperty(
-			this.localStorageKey,
-			'currentCardIndex',
-			newCurrentCardIndex
-		);
+	async setNewCardIndex(setId: string,newCurrentCardIndex: number) {
+
+		return await this.httpService.put(`/set/${setId}`, { 
+			currentCardIndex: newCurrentCardIndex || 0
+		 });
+
+		// await this.saveProperty(
+		// 	this.localStorageKey,
+		// 	'currentCardIndex',
+		// 	newCurrentCardIndex
+		// );
 	}
 
 	async addNewCard(card: CardDTO): Promise<CardDTO> {
@@ -71,5 +83,9 @@ export class SetService extends StorageService<SetDTO> implements ISetService {
 		} else {
 			return await this.httpService.post('/card', { data: card });
 		}
+	}
+
+	async deleteCard(id: string | number): Promise<void> {
+		return await this.httpService.delete(`/card/${id}`);
 	}
 }

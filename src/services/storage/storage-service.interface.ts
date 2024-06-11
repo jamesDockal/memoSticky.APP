@@ -5,5 +5,5 @@ export class IStorageService<T> {
 		property: keyof T,
 		data: T[keyof T]
 	) => Promise<void>;
-	fetch: (key: string, data: T) => Promise<T>;
+	getCards: (key: string, data: T) => Promise<T>;
 }

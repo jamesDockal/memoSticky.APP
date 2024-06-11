@@ -32,4 +32,14 @@ export class HttpService implements IHttp {
 			console.log('put', error);
 		}
 	}
+
+	async delete<T>(path: string): Promise<T> {
+		try {
+			const response = await this.hanlder.delete(path);
+			console.log('2', response.data);
+			return response.data;
+		} catch (error) {
+			console.log('put', error);
+		}
+	}
 }

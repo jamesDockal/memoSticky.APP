@@ -1,20 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Input } from '../Input/input.component';
-import { Container } from './set-edit-card.styles';
+import { Content, MainPart, Row, TipPart } from './set-edit-card.styles';
 import { Keyboard, View } from 'react-native';
 import { CardDTO } from '../../dto/set.dto';
+import { Remove } from '../Remove/remove.component';
 
 interface Props {
 	handleSave: (item: CardDTO) => void;
+	handleDelete: (item: CardDTO) => void;
 	card: CardDTO;
 }
 
-export const SetEditCard: React.FC<Props> = ({ card, handleSave }) => {
+export const SetEditCard: React.FC<Props> = ({
+	card,
+	handleSave,
+	handleDelete,
+}) => {
 	const [term, setTerm] = useState(card.term);
 	const [meaning, setMeaning] = useState(card.meaning);
+	const [termTip, setTermTip] = useState(card.termTip);
+	const [meaningTip, setMeaningTip] = useState(card.meaningTip);
 
 	const handleBur = () => {
-		handleSave({ term, meaning, id: card.id });
+		handleSave({
+			term,
+			meaning,
+			id: card.id,
+			meaningTip,
+			termTip,
+			setId: card.setId,
+		});
 	};
 
 	return (
@@ -26,37 +41,57 @@ export const SetEditCard: React.FC<Props> = ({ card, handleSave }) => {
 				display: 'flex',
 				flexDirection: 'row',
 				alignItems: 'center',
+				padding: 16,
+				gap: 12,
 			}}
 		>
-			<Container testID="set-card">
-				<Input
-					label="Term"
-					defaultValue={term}
-					onBlur={handleBur}
-					onChangeText={setTerm}
-				/>
+			<Remove onPress={() => handleDelete(card)} />
 
-				<View
-					style={{
-						marginTop: 16,
-					}}
-				>
-					<Input
-						label="Meaning"
-						defaultValue={meaning}
-						onBlur={handleBur}
-						onChangeText={setMeaning}
-					/>
-				</View>
-			</Container>
+			<Content testID="set-card">
+				<Row>
+					<MainPart>
+						<Input
+							label="Term"
+							defaultValue={term}
+							onBlur={handleBur}
+							onChangeText={setTerm}
+							blurOnSubmit={false}
+						/>
+					</MainPart>
 
-			{/* <Remove
-				style={{
-					position: 'absolute',
-					left: '70%',
-					zIndex: 0,
-				}}
-			></Remove> */}
+					<TipPart>
+						<Input
+							label="Term Tip"
+							defaultValue={termTip}
+							onBlur={handleBur}
+							onChangeText={setTermTip}
+							blurOnSubmit={false}
+						/>
+					</TipPart>
+				</Row>
+
+				<Row>
+					<MainPart>
+						<Input
+							label="Meaning"
+							defaultValue={meaning}
+							onBlur={handleBur}
+							onChangeText={setMeaning}
+							blurOnSubmit={false}
+						/>
+					</MainPart>
+
+					<TipPart>
+						<Input
+							label="Meaning Tip"
+							defaultValue={meaningTip}
+							onBlur={handleBur}
+							onChangeText={setMeaningTip}
+							blurOnSubmit={false}
+						/>
+					</TipPart>
+				</Row>
+			</Content>
 		</View>
 	);
 };

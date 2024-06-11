@@ -9,93 +9,84 @@ import { CardDTO, SetDTO } from '../../dto/set.dto';
 import { setService } from '../../factories';
 import { mockSetKey } from '../../mock';
 import { useIsFocused } from '@react-navigation/native';
-
-const DEFAULT_SET: SetDTO = {
-	// name: mockSetKey,
-	name: 'name',
-	currentCardIndex: 0,
-	cards: [
-		{
-			term: '',
-			meaning: '',
-		} as any,
-	],
-};
+import { Input } from '../../components/Input/input.component';
+import { useSetContext } from '../../context/set.context';
 
 export const EditSet: React.FC = () => {
-	const [set, setSet] = useState<SetDTO>(setService.localSet);
-	const [isLoading, setIsLoading] = useState(true);
-
 	const isFocused = useIsFocused();
+	const { currentSet, getSetInfo, addEmptyCard, deleteCard, handleSaveCard } =
+		useSetContext();
 
-	const handleSave = async (editedCard: CardDTO) => {
-		if (!editedCard.meaning || !editedCard.term) return;
-
-		const card = await setService.addNewCard(editedCard);
-
-		const editedSetCards = set.cards;
-
-		const index = editedSetCards.findIndex((card) => card.id === card.id);
-		editedSetCards[index] = card;
-
-		const removedEmpty = editedSetCards.filter(
-			(card) => card.meaning && card.term
-		);
-
-		await setService.saveProperty(
-			setService.localStorageKey,
-			'cards',
-			removedEmpty
-		);
-	};
+	const [isLoading, setIsLoading] = useState(false);
+	const [filterText, setFilterText] = useState('');
 
 	const fetchData = async () => {
 		setIsLoading(true);
-		const result = await setService.fetch();
-		if (!result?.cards.length) {
-			result.cards = DEFAULT_SET.cards;
-		}
-		setSet(result || DEFAULT_SET);
+		await getSetInfo(currentSet?.id);
 		setIsLoading(false);
 	};
 
 	const onPlusButtonPress = (): void => {
-		setSet((oldState) => ({
-			...oldState,
-			cards: [
-				...oldState.cards,
-				{
-					meaning: '',
-					term: '',
-				} as any,
-			],
-		}));
+		addEmptyCard();
+	};
+
+	const handleDelete = (card: CardDTO) => {
+		deleteCard(card);
 	};
 
 	useEffect(() => {
-		if (isFocused) {
+		if (isFocused && currentSet?.id) {
 			fetchData();
 		}
 	}, [isFocused]);
 
+	const filteredCards = (currentSet?.cards || []).filter((card) => {
+		if (!filterText) {
+			return true;
+		}
+
+		const keys = [
+			card.term,
+			card.termTip,
+			card.meaning,
+			card.meaningTip,
+		].filter((key) => key);
+
+		return keys.some((value: string) => {
+			return value.toString().includes(filterText);
+		});
+	});
+
 	return (
 		<Container>
+			<View
+				style={{
+					width: '100%',
+					padding: 16,
+				}}
+			>
+				<Input label="Search" onChangeText={setFilterText} value={filterText} />
+			</View>
+
 			{isLoading && (
 				<View
 					style={{
-						flex: 1,
-						justifyContent: 'center',
-						position: 'absolute',
-						right: 8,
+						alignSelf: 'flex-start',
 					}}
 				>
 					<ActivityIndicator size="large" color="#00ff00" />
 				</View>
 			)}
+
 			<FlatList
-				data={set.cards}
+				data={filteredCards}
 				renderItem={({ item, index }) => (
-					<SetEditCard key={item.id} card={item} handleSave={handleSave} />
+					<SetEditCard
+						key={item.id}
+						card={item}
+						handleSave={handleSaveCard}
+						handleDelete={handleDelete}
+					/>
 				)}
 			/>
 

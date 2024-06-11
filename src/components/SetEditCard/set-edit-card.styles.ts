@@ -1,16 +1,26 @@
 import styled from 'styled-components';
 
-import { Text, TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-export const Container = styled(View)`
+export const Content = styled(View)`
 	background-color: ${({ theme }) => theme.colors.darkBackground};
 	padding: ${RFValue(16)}px;
-	margin: ${RFValue(16)}px auto;
-	width: 75%;
+	padding-top: 0;
 	z-index: 1;
+	flex: 1;
 `;
 
-export const Label = styled(Text)``;
+export const Row = styled(View)`
+	flex-direction: row;
+	gap: 16px;
+	margin-top: 16px;
+`;
 
-export const InputComponent = styled(TextInput)``;
+export const MainPart = styled(View)`
+	width: 66%;
+`;
+
+export const TipPart = styled(View)`
+	width: 33%;
+`;
