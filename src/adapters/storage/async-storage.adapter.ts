@@ -2,13 +2,13 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 import { IStorageHandler } from './storage-handler.interface';
 
-export class AsyncStorageAdapter implements IStorageHandler {
-	async save<T>(key: string, data: T): Promise<void> {
-		await ReactNativeAsyncStorage.setItem(key, JSON.stringify(data));
+export class AsyncStorageAdapter<T> implements IStorageHandler<T> {
+	async save<K extends keyof T>(key: K, data: T[K]): Promise<void> {
+		await ReactNativeAsyncStorage.setItem(key.toString(), JSON.stringify(data));
 	}
 
 	async saveProperty<T, I extends keyof T>(
-		key: string,
+		key: any,
 		property: I,
 		data: T[I]
 	): Promise<void> {

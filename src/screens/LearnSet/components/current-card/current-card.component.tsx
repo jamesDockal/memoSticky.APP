@@ -9,7 +9,7 @@ import {
 	WriteMeaning,
 } from './current-card.styles';
 import { CardDTO } from '../../../../dto/set.dto';
-import { View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
 	card: CardDTO;
@@ -26,17 +26,31 @@ export const CurrentCard: React.FC<Props> = ({
 	const [showMeaning, setShowMeaning] = useState(false);
 
 	const showCardMeaning = () => {
-		setShowMeaning(true);
-		onShowCardMeaning();
+		if (!showMeaning) {
+			setShowMeaning(true);
+			onShowCardMeaning();
+		}
 	};
 
 	useEffect(() => {
 		setMeaning('');
 		setShowMeaning(false);
-	}, [card]);
+	}, [card.id]);
 
 	return (
 		<Content>
+			<TouchableOpacity
+				style={{
+					backgroundColor: 'white',
+				}}
+				accessibilityRole="button"
+				onPress={() => {
+					showCardMeaning();
+				}}
+			>
+				<Text>submit</Text>
+			</TouchableOpacity>
+
 			<Term>{card.term}</Term>
 
 			{card.termTip && <TermTip>{card.termTip}</TermTip>}

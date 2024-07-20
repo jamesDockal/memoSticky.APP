@@ -24,7 +24,7 @@ export const TermTip = styled(Text)`
 export const MeaningBox = styled(View)`
 	width: 100%;
 	padding: 16px;
-	border: 3px solid ${({ theme }) => theme.colors.red};
+	border: 3px solid ${({ theme }) => theme.colors?.red};
 	align-items: center;
 `;
 

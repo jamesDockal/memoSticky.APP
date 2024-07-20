@@ -15,12 +15,12 @@ export const Container = styled(TouchableOpacity)`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: ${({ theme }) => theme.colors.green};
+	background-color: ${({ theme }) => theme.colors?.green};
 `;
 
 export const PlusIcon = styled(Entypo).attrs({
 	name: 'plus',
 })`
 	font-size: ${RFValue(32)}px;
-	color: ${({ theme }) => theme.colors.lightText};
+	color: ${({ theme }) => theme.colors?.lightText};
 `;

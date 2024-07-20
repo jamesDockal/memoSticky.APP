@@ -1,9 +1,9 @@
-export class IStorageHandler {
-	save: <T>(key: string, data: T | []) => Promise<void>;
-	saveProperty: <T>(
+export class IStorageHandler<T> {
+	save: <K extends keyof T>(key: K, data: T[K]) => Promise<void>;
+	saveProperty: (
 		key: string,
 		property: keyof T,
 		data: T[keyof T]
 	) => Promise<void>;
-	fetch: <T>(key: string) => Promise<T>;
+	fetch: <K extends keyof T>(key: string) => Promise<T[K]>;
 }

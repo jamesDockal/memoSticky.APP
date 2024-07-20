@@ -11,6 +11,7 @@ type SetContextType = {
 	addEmptyCard: () => void;
 	deleteCard: (card: CardDTO) => void;
 	handleSaveCard: (editedCard: CardDTO) => void;
+	isLoadingAllSets: boolean;
 };
 
 const SetContext = createContext({} as SetContextType);
@@ -20,8 +21,9 @@ type Props = {
 };
 
 export const SetProvider: React.FC<Props> = ({ children }) => {
-	const [allSets, setAllSets] = useState([]);
-	const [currentSet, setCurrentSet] = useState({} as SetDTO);
+	const [allSets, setAllSets] = useState(setService.localData.allSets);
+	const [currentSet, setCurrentSet] = useState(setService.localData.currentSet);
+	const [isLoadingAllSets, setIsLoadingAllSets] = useState(false);
 
 	const DEFAULT_CARD: CardDTO = {
 		id: null,
@@ -32,28 +34,20 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 		setId: currentSet?.id,
 	};
 
-	const DEFAULT_SET: SetDTO = {
-		id: '',
-		name: 'name',
-		currentCardIndex: 0,
-		cards: [DEFAULT_CARD],
-	};
-
 	async function getAllSets() {
 		try {
+			setIsLoadingAllSets(true);
 			const sets = await setService.getAllSets();
-			console.log('sets', sets)
 			setAllSets(sets);
-
-			await getSetInfo(sets[0]?.id);
-		} catch (error) {
-			console.log('getAllSets error', error);
-		}
+		} catch (error) {}
+		setIsLoadingAllSets(false);
 	}
 
 	async function getSetInfo(setId: string) {
 		try {
-			const set = await setService.getSetInfo(setId);
+			await getSetFromStorage(setId);
+
+			const set = await setService.getCurrentSetInfo(setId);
 			setCurrentSet(set);
 			return set;
 		} catch (error) {}
@@ -83,11 +77,9 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 	}
 
 	const handleSaveCard = async (editedCard: CardDTO) => {
-		console.log('editedCard', editedCard);
 		const editedSetCards = currentSet?.cards;
 		const index = editedSetCards.findIndex((c) => c.id === editedCard.id);
 		const createdCard = await setService.addNewCard(editedCard);
-		console.log('createdCard', createdCard);
 
 		editedSetCards[index] = {
 			...editedCard,
@@ -110,11 +102,16 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 		// );
 	};
 
+	const getSetFromStorage = async (setId?: string) => {
+		try {
+			const storageSet = await setService.getSetFromStorage(setId);
+			setCurrentSet(storageSet);
+		} catch (error) {}
+	};
+
 	useEffect(() => {
 		getAllSets();
 	}, []);
-
-	console.log('currentSet', currentSet);
 
 	return (
 		<SetContext.Provider
@@ -126,6 +123,7 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 				addEmptyCard,
 				deleteCard,
 				handleSaveCard,
+				isLoadingAllSets,
 			}}
 		>
 			{children}

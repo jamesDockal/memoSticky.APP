@@ -5,81 +5,108 @@ import { IHttp } from '../http/http.interface';
 import { StorageService } from '../storage/storage.service';
 import { ISetService } from './set.interface';
 
-// TODO: remover  e fazer ficar em splash screen até terminar esse loading inicial
-const DEFAULT_SET: SetDTO = {
-	// name: mockSetKey,
-	id: '',
-	name: 'name',
-	currentCardIndex: 0,
-	cards: [
-		{
-			term: '',
-			meaning: '',
-		} as any,
-	],
-};
+interface ILocalData {
+	allSets: SetModel[];
+	currentSet: SetDTO;
+	"current-set-id": {
+		setId: string
+	}
+}
 
-export class SetService extends StorageService<SetDTO> implements ISetService {
+export class SetService implements ISetService {
 	public currentSet: SetDTO;
 	public localStorageKey: string = mockSetKey;
-	public localSet: SetDTO = DEFAULT_SET;
+
+	public localData: ILocalData = {} as ILocalData;
 
 	constructor(
-		storageHandler: IStorageHandler,
+		private readonly storageService: StorageService<ILocalData>,
 		private readonly httpService: IHttp
 	) {
-		super(storageHandler);
+		this.setStorageData();
+	}
 
-		this.getFromStorage().then((set) => {
-			this.localSet = set || DEFAULT_SET;
-		});
+	async setStorageData() {
+		this.localData.allSets = (await this.storageService.fetch('allSets')) || [];
+
+		const currentSetId = await this.storageService.fetch('current-set-id') 
+		if(currentSetId){
+				this.localData.currentSet = await this.getSetFromStorage(currentSetId.setId) || {}
+		}else{
+			let newSet = this.localData.allSets[0]
+
+				await this.storageService.save('current-set-id',{
+					setId: newSet?.id
+				}) 
+	
+				const teste = await this.getSetFromStorage(newSet.id)
+	
+				this.localData.currentSet = teste
+			}
 	}
 
 	async getAllSets(): Promise<SetModel[]> {
-		const sets = await this.httpService.get<SetModel[]>('/set');
-
-		return sets;
+		try {
+			const sets = await this.httpService.get<SetModel[]>('/set');
+			await this.storageService.save('allSets', sets);
+			this.localData.allSets = sets;
+			return sets;
+		} catch (error) {
+			return this.localData.allSets || [];
+		}
 	}
 
-	async getSetInfo(setId: string): Promise<SetDTO> {
-		const set = await this.httpService.get<SetDTO>(`/set/${setId}`);
-		// this.saveProperty(this.localStorageKey, 'cards', set.cards);
+	async getCurrentSetInfo(setId: string): Promise<SetDTO> {
+		try {
+			const set = await this.httpService.get<SetDTO>(`/set/${setId}`);
 
-		// const currentSet = await super.getCards(this.localStorageKey);
+			await this.storageService.save('current-set-id',{
+				setId: setId
+			}) 
+			
+			await this.storageService.save(`set-${setId}` as any, set);
 
-		// this.currentSet = currentSet;
+			return set;
+		} catch (error) {
+			const localSet = (await this.storageService.fetch(
+				`set-${setId}`
+			)) as SetDTO;
+			if (localSet) {
+				return localSet;
+			}
 
-		// if (
-		// 	currentSet &&
-		// 	((!currentSet?.currentCardIndex && currentSet?.currentCardIndex !== 0) ||
-		// 		currentSet?.currentCardIndex > currentSet.cards.length)
-		// ) {
-		// 	await this.saveProperty(this.localStorageKey, 'currentCardIndex', 0);
-		// }
-
-		return set;
+			return {
+				currentCardIndex: 0,
+				id: setId,
+				cards: [],
+				name: '',
+			} as SetDTO;
+		}
 	}
 
-	async getFromStorage(): Promise<SetDTO> {
-		return await super.getCards(this.localStorageKey);
-	}
+	async setNewCardIndex(setId: string, newCurrentCardIndex: number) {
+		try {
+			await this.storageService.saveProperty(
+				`set-${setId}`,
+				'currentCardIndex',
+				newCurrentCardIndex
+			);
 
-	async setNewCardIndex(setId: string,newCurrentCardIndex: number) {
-
-		return await this.httpService.put(`/set/${setId}`, { 
-			currentCardIndex: newCurrentCardIndex || 0
-		 });
-
-		// await this.saveProperty(
-		// 	this.localStorageKey,
-		// 	'currentCardIndex',
-		// 	newCurrentCardIndex
-		// );
+			return await this.httpService.put(`/set/${setId}`, {
+				currentCardIndex: newCurrentCardIndex || 0,
+			});
+		} catch (error) {
+			
+		}
 	}
 
 	async addNewCard(card: CardDTO): Promise<CardDTO> {
 		if (card.id) {
-			return await this.httpService.put(`/card/${card.id}`, { data: card });
+			const response = await this.httpService.put(`/card/${card.id}`, {
+				data: card,
+			});
+
+			return response;
 		} else {
 			return await this.httpService.post('/card', { data: card });
 		}
@@ -88,4 +115,25 @@ export class SetService extends StorageService<SetDTO> implements ISetService {
 	async deleteCard(id: string | number): Promise<void> {
 		return await this.httpService.delete(`/card/${id}`);
 	}
+
+	async getSetFromStorage(setdId?: string): Promise<SetDTO> {
+		const setId = setdId || this.localData?.currentSet?.id;
+		return (await this.storageService.fetch(`set-${setId}`)) as SetDTO;
+	}
+
+	async setIsWritingMeaning (setId, value: boolean) {
+		return await this.storageService.save(
+			`writing-meaning-${setId}`,
+			{
+				value
+			}
+		);
+	}
+
+	async getIsWritingMeaning (setId) {
+		return await this.storageService.fetch(
+			`writing-meaning-${setId}`
+		)
+	}
+
 }

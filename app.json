@@ -1,46 +1,41 @@
 {
-  "expo": {
-    "name": "memosticky",
-    "slug": "memosticky",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/f6d9b2e9-9621-45ce-8ff5-1f3054162fcd"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.anonymous.memosticky"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "f6d9b2e9-9621-45ce-8ff5-1f3054162fcd"
-      }
-    },
-    "plugins": [
-      "@react-native-google-signin/google-signin"
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    }
-  }
+	"expo": {
+		"name": "memosticky",
+		"slug": "memosticky",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0,
+			"url": "https://u.expo.dev/f6d9b2e9-9621-45ce-8ff5-1f3054162fcd"
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true
+		},
+		"android": {
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/adaptive-icon.png",
+				"backgroundColor": "#FFFFFF"
+			},
+			"package": "com.anonymous.memosticky"
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"extra": {
+			"eas": {
+				"projectId": "f6d9b2e9-9621-45ce-8ff5-1f3054162fcd"
+			}
+		},
+		"runtimeVersion": {
+			"policy": "appVersion"
+		}
+	}
 }

@@ -2,10 +2,10 @@ import { IStorageHandler } from '../../adapters/storage/storage-handler.interfac
 import { IStorageService } from './storage-service.interface';
 
 export class StorageService<T> implements IStorageService<T> {
-	constructor(private readonly storageHandler: IStorageHandler) {}
+	constructor(private readonly storageHandler: IStorageHandler<T>) {}
 
-	async save(key: string, data: T | []): Promise<void> {
-		await this.storageHandler.save<T>(key, data);
+	async save<K extends keyof T>(key: K, data: T[K]  ): Promise<void> {
+		await this.storageHandler.save(key, data);
 	}
 
 	async saveProperty<I extends keyof T>(
@@ -13,10 +13,10 @@ export class StorageService<T> implements IStorageService<T> {
 		property: I,
 		data: T[I]
 	): Promise<void> {
-		await this.storageHandler.saveProperty<T>(key, property, data);
+		await this.storageHandler.saveProperty(key, property, data);
 	}
 
-	async getCards(key: string): Promise<T> {
-		return await this.storageHandler.fetch<T>(key);
+	async fetch<K extends keyof T>(key: string): Promise<T[K]> {
+		return await this.storageHandler.fetch(key);
 	}
 }

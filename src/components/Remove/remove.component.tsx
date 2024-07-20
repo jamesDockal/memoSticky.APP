@@ -9,7 +9,7 @@ export const Remove: React.FC<Props> = ({ ...props }) => {
 	const { colors } = useTheme();
 	return (
 		<TouchableOpacity {...props}>
-			<Ionicons name="ios-close-circle" size={40} color={colors.red} />
+			<Ionicons name="close-circle" size={40} color={colors.red} />
 		</TouchableOpacity>
 	);
 };

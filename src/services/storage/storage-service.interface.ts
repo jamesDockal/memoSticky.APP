@@ -1,9 +1,9 @@
 export class IStorageService<T> {
-	save: (key: string, data: T) => Promise<void>;
+	save: <K extends keyof T>(key: K, data: T[K]) => Promise<void>;
 	saveProperty: (
 		key: string,
 		property: keyof T,
 		data: T[keyof T]
 	) => Promise<void>;
-	getCards: (key: string, data: T) => Promise<T>;
+	fetch: <K extends keyof T>(key: string) => Promise<T[K]>
 }
