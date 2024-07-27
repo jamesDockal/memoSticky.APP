@@ -5,5 +5,5 @@ export class IStorageService<T> {
 		property: keyof T,
 		data: T[keyof T]
 	) => Promise<void>;
-	fetch: <K extends keyof T>(key: string) => Promise<T[K]>
+	fetch: <K extends keyof T>(key: K) => Promise<T[K]>;
 }

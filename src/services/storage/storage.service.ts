@@ -4,7 +4,7 @@ import { IStorageService } from './storage-service.interface';
 export class StorageService<T> implements IStorageService<T> {
 	constructor(private readonly storageHandler: IStorageHandler<T>) {}
 
-	async save<K extends keyof T>(key: K, data: T[K]  ): Promise<void> {
+	async save<K extends keyof T>(key: K, data: T[K]): Promise<void> {
 		await this.storageHandler.save(key, data);
 	}
 
@@ -16,7 +16,7 @@ export class StorageService<T> implements IStorageService<T> {
 		await this.storageHandler.saveProperty(key, property, data);
 	}
 
-	async fetch<K extends keyof T>(key: string): Promise<T[K]> {
-		return await this.storageHandler.fetch(key);
+	async fetch<K extends keyof T>(key: K): Promise<T[K]> {
+		return await this.storageHandler.fetch(key as string);
 	}
 }

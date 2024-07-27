@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSetContext } from '../src/context/set.context';
-import { CardDTO, SetDTO } from '../src/dto/set.dto';
+import { CardDTO } from '../src/dto/set.dto';
 import { setService } from '../src/factories';
 import {
 	Container,
@@ -9,37 +9,54 @@ import {
 } from '../src/screens/LearnSet/learn-set.styles';
 import { CurrentCard } from '../src/screens/LearnSet/components/current-card/current-card.component';
 import Checkbox from 'expo-checkbox';
-import { Button, Text, TouchableOpacity, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import * as Speech from 'expo-speech';
 import { useFocusEffect } from 'expo-router';
 
 const LearnSet: React.FC = () => {
 	const { currentSet, setCurrentSet } = useSetContext();
-	const [learnSet, setLearnSet] = useState(currentSet);
 
 	const [writeMeaning, setWritingMeaning] = useState(false);
 	const [currentCard, setCurrentCard] = useState<CardDTO>({} as CardDTO);
 
 	const onWriteMeaning = async (text: string) => {
-		if (text.toLowerCase() === currentCard.meaning.toLowerCase()) {
-			let newIndex = learnSet.currentCardIndex + 1;
-			if (newIndex >= learnSet.cards.length) {
+		if (
+			text.trim().toLowerCase() === currentCard.meaning.trim().toLowerCase()
+		) {
+			let newIndex = currentSet.currentCardIndex + 1;
+			if (newIndex >= currentSet.cards.length) {
 				newIndex = 0;
 			}
 
-			setLearnSet((oldState) => ({
+			setCurrentSet((oldState) => ({
 				...oldState,
 				currentCardIndex: newIndex,
 			}));
 
-			await setService.setNewCardIndex(learnSet.id, newIndex);
+			await setService.setNewCardIndex(currentSet.id, newIndex);
 		}
 	};
 
 	const onShowCardMeaning = () => {
-		setLearnSet((oldState) => {
+		setCurrentSet((oldState) => {
+			speakText(currentCard.meaning);
+
 			const newCards = [...oldState.cards];
-			newCards.splice(oldState.currentCardIndex + 3, 0, currentCard);
+
+			const cardused: CardDTO = {
+				id: currentCard?.id,
+				setId: currentCard?.setId,
+				imageUrl: currentCard?.imageUrl,
+
+				term: writeMeaning ? currentCard?.meaning : currentCard?.term,
+				termTip: writeMeaning ? currentCard?.meaningTip : currentCard?.termTip,
+				meaning: writeMeaning ? currentCard?.term : currentCard?.meaning,
+				meaningTip: writeMeaning
+					? currentCard?.termTip
+					: currentCard?.meaningTip,
+			};
+
+			newCards.splice(oldState.currentCardIndex + 3, 0, cardused);
 			return {
 				...oldState,
 				cards: newCards,
@@ -47,10 +64,14 @@ const LearnSet: React.FC = () => {
 		});
 	};
 
-	const setNewCard = () => {
-		const index = learnSet?.currentCardIndex || currentSet?.currentCardIndex;
+	const setNewCard = async () => {
+		let index = currentSet?.currentCardIndex || 0;
+		const newCard = currentSet.cards[index] || ({} as CardDTO);
 
-		const newCard = learnSet.cards[index || 0];
+		if (index >= currentSet.cards.length) {
+			index = 0;
+			await setService.setNewCardIndex(currentSet.id, 0);
+		}
 
 		const cardused: CardDTO = {
 			id: newCard.id,
@@ -60,42 +81,32 @@ const LearnSet: React.FC = () => {
 			term: writeMeaning ? newCard.meaning : newCard.term,
 			termTip: writeMeaning ? newCard.meaningTip : newCard.termTip,
 			meaning: writeMeaning ? newCard.term : newCard.meaning,
-			meaningTip: writeMeaning ? newCard.meaningTip : newCard.meaningTip,
+			meaningTip: writeMeaning ? newCard.termTip : newCard.meaningTip,
 		};
-		// console.log('cardused', cardused);
 
-		Speech.speak(cardused.term);
+		speakText(cardused.term);
 
-		setCurrentCard(newCard);
+		setCurrentCard(cardused);
 	};
 
 	const onChangeCheckbox = async (newValue: boolean) => {
-		const index = learnSet?.currentCardIndex || currentSet?.currentCardIndex;
-
-		const card = learnSet.cards[index];
-
-		const cardused: CardDTO = {
-			id: card.id,
-			setId: card.setId,
-			imageUrl: card.imageUrl,
-
-			term: newValue ? card.meaning : card.term,
-			termTip: newValue ? card.meaningTip : card.termTip,
-			meaning: newValue ? card.term : card.meaning,
-			meaningTip: newValue ? card.meaningTip : card.meaningTip,
-		};
-
-		setCurrentCard(cardused);
 		setWritingMeaning(newValue);
 		await setService.setIsWritingMeaning(currentSet.id, newValue);
 	};
 
-	useEffect(() => {
-		setNewCard();
-	}, [learnSet?.currentCardIndex, currentSet?.currentCardIndex]);
+	const speakText = (text: string) => {
+		Speech.speak(text, {
+			language: 'zh-CH',
+		});
+	};
 
 	useEffect(() => {
-		setLearnSet(currentSet);
+		console.log('change', writeMeaning);
+		setNewCard();
+	}, [writeMeaning, currentSet?.currentCardIndex]);
+
+	useEffect(() => {
+		setCurrentSet(currentSet);
 		setService.getIsWritingMeaning(currentSet.id).then(({ value }: any) => {
 			setWritingMeaning(value);
 		});
@@ -104,15 +115,17 @@ const LearnSet: React.FC = () => {
 	useFocusEffect(
 		useCallback(() => {
 			setNewCard();
-		}, [learnSet?.id])
+		}, [writeMeaning, currentSet?.id])
 	);
 
 	return (
 		<Container
-			source={{
-				// uri: currentCard?.imageUrl
-				uri: 'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg',
-			}}
+			source={
+				{
+					// uri: currentCard?.imageUrl
+					// uri: 'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg',
+				}
+			}
 		>
 			<View
 				style={{
@@ -135,6 +148,11 @@ const LearnSet: React.FC = () => {
 				>
 					{writeMeaning ? 'Escrever meaning' : 'Escrever term'}
 				</Text>
+
+				<Button
+					title="speak2"
+					onPress={() => speakText(currentCard?.meaning)}
+				/>
 			</View>
 
 			<CardContainer>

@@ -1,0 +1,5 @@
+eas build --profile preview --platform android
+
+npm config set strict-ssl false
+npm config set registry http://registry.npmjs.org/
+set NODE_TLS_REJECT_UNAUTHORIZED=0

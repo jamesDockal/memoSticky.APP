@@ -39,11 +39,20 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 			setIsLoadingAllSets(true);
 			const sets = await setService.getAllSets();
 			setAllSets(sets);
-		} catch (error) {}
-		setIsLoadingAllSets(false);
+
+			if (!currentSet?.id && sets[0].id) {
+				await getSetInfo(sets[0].id);
+			}
+		} catch (error) {
+		} finally {
+			setIsLoadingAllSets(false);
+		}
 	}
 
 	async function getSetInfo(setId: string) {
+		if (!setId) {
+			return;
+		}
 		try {
 			await getSetFromStorage(setId);
 
@@ -111,6 +120,11 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 
 	useEffect(() => {
 		getAllSets();
+
+		const currentSetId = setService.localData.currentSetId;
+		if (currentSetId) {
+			getSetInfo(currentSetId);
+		}
 	}, []);
 
 	return (
