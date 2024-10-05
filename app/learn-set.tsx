@@ -101,7 +101,6 @@ const LearnSet: React.FC = () => {
 	};
 
 	useEffect(() => {
-		console.log('change', writeMeaning);
 		setNewCard();
 	}, [writeMeaning, currentSet?.currentCardIndex]);
 
