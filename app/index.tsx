@@ -47,6 +47,7 @@ const EditSet: React.FC = () => {
 
 	return (
 		<Container>
+			teste james build
 			<View
 				style={{
 					width: '100%',
@@ -55,7 +56,6 @@ const EditSet: React.FC = () => {
 			>
 				<Input label="Search" onChangeText={setFilterText} value={filterText} />
 			</View>
-
 			{isLoadingAllSets && (
 				<View
 					style={{
@@ -65,7 +65,6 @@ const EditSet: React.FC = () => {
 					<ActivityIndicator size="large" color="#00ff00" />
 				</View>
 			)}
-
 			<FlatList
 				ref={cardsRef}
 				data={filteredCards}
@@ -79,7 +78,6 @@ const EditSet: React.FC = () => {
 					/>
 				)}
 			/>
-
 			<Plus onPress={onPlusButtonPress} />
 		</Container>
 	);
