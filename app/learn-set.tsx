@@ -11,10 +11,10 @@ import { CurrentCard } from '../src/screens/LearnSet/components/current-card/cur
 import Checkbox from 'expo-checkbox';
 import { Button, Text, View } from 'react-native';
 import * as Speech from 'expo-speech';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, router } from 'expo-router';
 
 const LearnSet: React.FC = () => {
-	const { currentSet, setCurrentSet } = useSetContext();
+	const { currentSet, setCurrentSet, cardsRef } = useSetContext();
 
 	const [writeMeaning, setWritingMeaning] = useState(false);
 	const [currentCard, setCurrentCard] = useState<CardDTO>({} as CardDTO);
@@ -173,6 +173,17 @@ const LearnSet: React.FC = () => {
 				>
 					{writeMeaning ? 'Escrever meaning' : 'Escrever term'}
 				</Text>
+
+				<Button
+					title="scroll"
+					onPress={() => {
+						cardsRef?.current?.scrollToIndex({
+							animated: true,
+							index: currentSet.currentCardIndex,
+						});
+						router.navigate('');
+					}}
+				/>
 
 				<Button title="speak" onPress={() => speakText(currentCard?.meaning)} />
 

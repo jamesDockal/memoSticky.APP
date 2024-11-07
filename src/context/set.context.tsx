@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { createContext } from 'react';
 import { setService } from '../factories';
 import { CardDTO, SetDTO, SetModel } from '../dto/set.dto';
+import { FlatList, FlatListComponent } from 'react-native';
 
 type SetContextType = {
 	allSets: SetModel[];
@@ -12,6 +13,7 @@ type SetContextType = {
 	deleteCard: (card: CardDTO) => void;
 	handleSaveCard: (editedCard: CardDTO) => void;
 	isLoadingAllSets: boolean;
+	cardsRef: React.MutableRefObject<FlatList<any>>;
 };
 
 const SetContext = createContext({} as SetContextType);
@@ -24,6 +26,8 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 	const [allSets, setAllSets] = useState(setService.localData.allSets);
 	const [currentSet, setCurrentSet] = useState(setService.localData.currentSet);
 	const [isLoadingAllSets, setIsLoadingAllSets] = useState(false);
+
+	const cardsRef = useRef<FlatList>(null);
 
 	const DEFAULT_CARD: CardDTO = {
 		id: null,
@@ -138,6 +142,7 @@ export const SetProvider: React.FC<Props> = ({ children }) => {
 				deleteCard,
 				handleSaveCard,
 				isLoadingAllSets,
+				cardsRef,
 			}}
 		>
 			{children}

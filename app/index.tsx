@@ -2,10 +2,11 @@ import React, { useRef, useState } from 'react';
 import { useSetContext } from '../src/context/set.context';
 import { CardDTO } from '../src/dto/set.dto';
 import { Container } from '../src/screens/EditSet/edit-set.styles';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, Button, FlatList, View } from 'react-native';
 import { Input } from '../src/components/Input/input.component';
 import { SetEditCard } from '../src/components/SetEditCard/set-edit-card.component';
 import { Plus } from '../src/components/Plus/plus.component';
+import { router } from 'expo-router';
 
 const EditSet: React.FC = () => {
 	const {
@@ -14,10 +15,10 @@ const EditSet: React.FC = () => {
 		deleteCard,
 		handleSaveCard,
 		isLoadingAllSets,
+		cardsRef,
 	} = useSetContext();
 
 	const [filterText, setFilterText] = useState('');
-	const cardsRef = useRef(null);
 
 	const onPlusButtonPress = (): void => {
 		cardsRef.current.scrollToEnd();
