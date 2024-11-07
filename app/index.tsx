@@ -47,7 +47,6 @@ const EditSet: React.FC = () => {
 
 	return (
 		<Container>
-			teste james build 2
 			<View
 				style={{
 					width: '100%',

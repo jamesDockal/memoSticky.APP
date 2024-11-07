@@ -135,4 +135,12 @@ export class SetService implements ISetService {
 	async getIsWritingMeaning(setId) {
 		return await this.storageService.fetch(`writing-meaning-${setId}`);
 	}
+
+	async generateImage(cardId: string | number): Promise<string> {
+		const { imageUrl } = await this.httpService.put<CardDTO>(
+			`/card/generate-card-image/${cardId}`,
+			{}
+		);
+		return imageUrl;
+	}
 }

@@ -18,6 +18,7 @@ const LearnSet: React.FC = () => {
 
 	const [writeMeaning, setWritingMeaning] = useState(false);
 	const [currentCard, setCurrentCard] = useState<CardDTO>({} as CardDTO);
+	const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
 	const onWriteMeaning = async (text: string) => {
 		if (
@@ -100,6 +101,34 @@ const LearnSet: React.FC = () => {
 		});
 	};
 
+	const generateImage = async (cardId: string | number) => {
+		try {
+			setIsGeneratingImage(true);
+			const url = await setService.generateImage(cardId);
+
+			setCurrentCard((oldState) => ({
+				...oldState,
+				imageUrl: url,
+			}));
+			setCurrentSet((oldState) => {
+				const currentCardIndex = currentSet?.currentCardIndex;
+				const copy = [...oldState.cards];
+				copy[currentCardIndex] = {
+					...copy[currentCardIndex],
+					imageUrl: url,
+				};
+
+				return {
+					...oldState,
+					cards: copy,
+				};
+			});
+		} catch (error) {
+		} finally {
+			setIsGeneratingImage(false);
+		}
+	};
+
 	useEffect(() => {
 		setNewCard();
 	}, [writeMeaning, currentSet?.currentCardIndex]);
@@ -119,12 +148,9 @@ const LearnSet: React.FC = () => {
 
 	return (
 		<Container
-			source={
-				{
-					// uri: currentCard?.imageUrl
-					// uri: 'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg',
-				}
-			}
+			source={{
+				uri: currentCard?.imageUrl,
+			}}
 		>
 			<View
 				style={{
@@ -148,9 +174,12 @@ const LearnSet: React.FC = () => {
 					{writeMeaning ? 'Escrever meaning' : 'Escrever term'}
 				</Text>
 
+				<Button title="speak" onPress={() => speakText(currentCard?.meaning)} />
+
 				<Button
-					title="speak2"
-					onPress={() => speakText(currentCard?.meaning)}
+					title="generate image"
+					onPress={() => generateImage(currentCard?.id)}
+					disabled={isGeneratingImage}
 				/>
 			</View>
 
