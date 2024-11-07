@@ -50,6 +50,7 @@ export const CurrentCard: React.FC<Props> = ({
 			>
 				<Text>submit</Text>
 			</TouchableOpacity>
+			<Text>EXPO_PUBLIC_API_URL: {process.env.EXPO_PUBLIC_API_URL}</Text>
 
 			<Term>{card.term}</Term>
 
