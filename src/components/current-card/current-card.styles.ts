@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 import styled from 'styled-components';
-import { Input } from '../../../../components/Input/input.component';
+import { Input } from '../Input/input.component';
 
 export const Content = styled(View)`
 	padding: 16px 12px;

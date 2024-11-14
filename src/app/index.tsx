@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { useSetContext } from '../src/context/set.context';
-import { CardDTO } from '../src/dto/set.dto';
-import { Container } from '../src/screens/EditSet/edit-set.styles';
+import { useSetContext } from '../context/set.context';
+import { CardDTO } from '../dto/set.dto';
 import { ActivityIndicator, Button, FlatList, View } from 'react-native';
-import { Input } from '../src/components/Input/input.component';
-import { SetEditCard } from '../src/components/SetEditCard/set-edit-card.component';
-import { Plus } from '../src/components/Plus/plus.component';
+import { Input } from '../components/Input/input.component';
+import { SetEditCard } from '../components/SetEditCard/set-edit-card.component';
+import { Plus } from '../components/Plus/plus.component';
 import { router } from 'expo-router';
+import { Container } from '../styles/edit-set.page.styles';
 
 const EditSet: React.FC = () => {
 	const {

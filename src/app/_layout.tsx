@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Text, View } from 'react-native';
-import { SetProvider } from '../src/context/set.context';
-import { darkTheme } from '../src/styles/theme';
+import { SetProvider } from '../context/set.context';
+import { darkTheme } from '../styles/theme';
 import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { ThemeProvider } from 'styled-components';
 import { useFonts } from 'expo-font';
@@ -10,7 +10,7 @@ import {
 	Poppins_500Medium,
 	Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
-import SelectSet from '../src/components/SelectSet/select-set.component';
+import SelectSet from '../components/SelectSet/select-set.component';
 
 export default function RootLayout() {
 	const theme = darkTheme;

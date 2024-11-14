@@ -8,7 +8,7 @@ import {
 	TermTip,
 	WriteMeaning,
 } from './current-card.styles';
-import { CardDTO } from '../../../../dto/set.dto';
+import { CardDTO } from '../../dto/set.dto';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {

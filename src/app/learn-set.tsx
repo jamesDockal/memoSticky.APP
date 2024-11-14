@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSetContext } from '../src/context/set.context';
-import { CardDTO } from '../src/dto/set.dto';
-import { setService } from '../src/factories';
+import { useSetContext } from '../context/set.context';
+import { CardDTO } from '../dto/set.dto';
+import { setService } from '../factories';
 import {
 	Container,
 	CardContainer,
 	OpacityBackground,
-} from '../src/screens/LearnSet/learn-set.styles';
-import { CurrentCard } from '../src/screens/LearnSet/components/current-card/current-card.component';
+} from '../styles/learn-set.page.styles';
+import { CurrentCard } from '../components/current-card/current-card.component';
 import Checkbox from 'expo-checkbox';
 import { Button, Text, View } from 'react-native';
 import * as Speech from 'expo-speech';
