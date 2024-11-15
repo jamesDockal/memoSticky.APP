@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { Text, View } from 'react-native';
 import { SetProvider } from '../context/set.context';
 import { darkTheme } from '../styles/theme';
-import { Feather, FontAwesome5 } from '@expo/vector-icons';
+import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { ThemeProvider } from 'styled-components';
 import { useFonts } from 'expo-font';
 import {
@@ -76,9 +76,9 @@ export default function RootLayout() {
 							},
 							tabBarIcon: (props) => {
 								return (
-									<FontAwesome5
-										name="pencil-alt"
-										size={props.size}
+									<MaterialIcons
+										name="edit-note"
+										size={36}
 										color={
 											props.focused
 												? theme.colors.green
@@ -99,6 +99,28 @@ export default function RootLayout() {
 								return (
 									<FontAwesome5
 										name="book"
+										size={props.size}
+										color={
+											props.focused
+												? theme.colors.green
+												: theme.colors.lightText
+										}
+									/>
+								);
+							},
+						}}
+					/>
+
+					<Tabs.Screen
+						name="draw"
+						options={{
+							tabBarLabel: () => {
+								return null;
+							},
+							tabBarIcon: (props) => {
+								return (
+									<FontAwesome5
+										name="pencil-alt"
 										size={props.size}
 										color={
 											props.focused
