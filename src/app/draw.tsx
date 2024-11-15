@@ -62,6 +62,7 @@ const Draw: React.FC = () => {
 	const writer = useHanziWriter({
 		character: currentChar,
 		loader(char) {
+			speakText(currentChar);
 			return fetch(
 				`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${char}.json`
 			).then((res) => res.json());
@@ -90,7 +91,9 @@ const Draw: React.FC = () => {
 				setShowStrokes(false);
 			}
 		},
-		onCorrectStroke() {},
+		onCorrectStroke() {
+			speakText(currentChar);
+		},
 		onMistake(strokeData) {},
 	});
 
