@@ -7,10 +7,11 @@ import { useSetContext } from '../context/set.context';
 import { setService } from '../factories';
 import Checkbox from 'expo-checkbox';
 import * as Speech from 'expo-speech';
+import { router } from 'expo-router';
 
 const Draw: React.FC = () => {
 	const { currentSet, setCurrentSet, cardsRef } = useSetContext();
-	console.log('currentSet', currentSet.currentCardIndex);
+
 	const [currentCard, setCurrentCard] = useState<CardDTO>({} as CardDTO);
 	const [charIndex, setCharIndex] = useState(0);
 	const [writeMeaning, setWritingMeaning] = useState(false);
@@ -72,17 +73,18 @@ const Draw: React.FC = () => {
 		showHintAfterMisses: 2,
 		onComplete: async ({ totalMistakes }) => {
 			if (charIndex === currentCard.term.length - 1) {
-				console.log('dentro aqui');
+				console.log('dentro do if');
 				setCharIndex(0);
 				let newIndex = currentSet.currentCardIndex + 1;
 				if (newIndex >= currentSet.cards.length) {
 					newIndex = 0;
 				}
 
-				console.log('newIndex', newIndex);
-
+				setCurrentSet((oldState) => ({
+					...oldState,
+					currentCardIndex: newIndex,
+				}));
 				await setService.setNewCardIndex(currentSet.id, newIndex);
-				setNewCard();
 			} else {
 				setCharIndex((oldState) => oldState + 1);
 				setShowStrokes(false);
@@ -123,6 +125,17 @@ const Draw: React.FC = () => {
 				<Button
 					title="show strokes"
 					onPress={() => setShowStrokes(!showStrokes)}
+				/>
+
+				<Button
+					title="scroll"
+					onPress={() => {
+						cardsRef?.current?.scrollToIndex({
+							animated: true,
+							index: currentSet.currentCardIndex,
+						});
+						router.navigate('');
+					}}
 				/>
 			</View>
 
